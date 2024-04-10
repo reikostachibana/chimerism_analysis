@@ -1,0 +1,76 @@
+import ribopy
+from ribopy import Ribo
+from sequence_functions import find_sequence
+from ribopy_functions import get_psite_offset, get_transcript_list, find_cds
+import numpy as np
+import pandas as pd
+import pandas as pd
+import multiprocessing
+from collections import Counter
+import time
+
+# Initialize variables
+ribo_path   = '/Users/reikotachibana/Documents/files_analysis_c_elegans/ribo_files/Rep_5.ribo'
+ribo_object = Ribo(ribo_path)
+reference_path = '/Users/reikotachibana/Documents/files_analysis_c_elegans/celegans_reference/appris_celegans_v1_selected_new.fa'
+exp= "WT_1cell_D"
+min_len = 26
+max_len = 40
+nt_sequence = find_sequence(ribo_object, reference_path)
+transcripts = ribo_object.transcript_names
+
+# Dictionary of CDS ranges {transcript: (start, stop)}
+cds_range = {} 
+for transcript in transcripts:
+    cds_range[transcript] = find_cds(sequence[transcript])
+    start, stop = cds_range[transcript]
+
+offset = get_psite_offset(ribo_object, exp, min_len, max_len)
+
+# Finds coverage using p-site offset for a transcript
+def find_coverage(ribo_object, transcript, cds_range, offset, exp, min_len, max_len, alias):
+    start, stop = cds_range[transcript]
+    coverages = [
+        ribo_object.get_coverage(experiment=exp, range_lower=i, range_upper=i, alias=alias)
+        [transcript][start - offset[i] : stop - offset[i]]
+        for i in range(min_len, max_len + 1)
+    ]
+
+    coverage = sum(coverages, np.zeros_like(coverages[0]))
+    return coverage
+
+# Finds codon occupancy of each footprint for a transcript
+def find_codon_occupancy(coverage, cds_range, nt_sequence, transcript):
+    start, stop = cds_range[transcript]
+    codons = [nt_sequence[transcript][start + i : start + i + 3] 
+              for i in range(0, len(coverage), 3)]
+    
+    return Counter(codons)
+
+def process_transcript(transcript):
+    coverage = find_coverage(ribo_object, transcript, cds_range, offset, exp, min_len, max_len, alias)
+    
+    if sum(coverage) > 0:
+        codon_occ = find_codon_occupancy(coverage, cds_range, nt_sequence, transcript)
+        return codon_occ
+    else:
+        return Counter()
+
+
+if __name__ == '__main__':
+    start_time = time.time()
+
+    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+    results = pool.map(process_transcript, transcript_list)
+    pool.close()
+    pool.join()
+
+    codon_occupancy = Counter()
+    for result in results:
+        codon_occupancy.update(result)
+
+    print(sorted(codon_occupancy.items()))
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Time taken: {elapsed_time} seconds")
