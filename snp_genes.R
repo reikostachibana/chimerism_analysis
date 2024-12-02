@@ -3,7 +3,8 @@ library(dplyr)
 library(tidyr)
 library(gridExtra)
 
-setwd("/Users/reikotachibana/Documents/Chung Lab/Chimerism") 
+# setwd("/Users/reikotachibana/Documents/Chung Lab/Chimerism") 
+setwd("chimerism_analysis")
 
 # Get genes and their chromosomes/positions
 ensembl <- useMart("ensembl")

@@ -2,7 +2,7 @@ library(GenomicRanges)
 library(ggplot2)
 library(MutationalPatterns)
 
-setwd("/Users/reikotachibana/Documents/Chung Lab/Chimerism") 
+# setwd("/Users/reikotachibana/Documents/Chung Lab/Chimerism") 
 
 ppid_folders <- list.files(pattern = "PPID")
 hyb_probes <- read.table("xgen-aml-cancer-hyb-panel-probes_hg38.bed")
