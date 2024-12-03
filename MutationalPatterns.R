@@ -35,8 +35,8 @@ type_occurrences <- mut_type_occurrences(bed_gr, ref_genome)
 context <- mut_context(bed_gr, ref_genome)
 
 mut_mat <- mut_matrix(vcf_list = bed_gr, ref_genome = ref_genome)
-plot_96_profile(mut_mat, ymax = 0.055, condensed = TRUE)
-
+plot_96 <- plot_96_profile(mut_mat, ymax = 0.055, condensed = TRUE)
+ggsave("Images/MutationalPatterns.png", plot = plot_96, width = 16, height = 9)
 
 norm_mut_matrix <- apply(mut_mat, 2, function(x) x / sum(x))
 # Get substitution and context from rownames and make long.
@@ -55,25 +55,26 @@ colors <- c(
   "#2EBAED", "#000000", "#DE1C14",
   "#D4D2D2", "#ADCC54", "#F0D0CE"
 )
-ggplot(data = tb, aes(
-  x = context,
-  y = freq,
-  fill = substitution,
-  width = 0.6
-)) +
-  geom_bar(stat = "identity", colour = "black", size = .2) +
-  scale_fill_manual(values = colors) +
-  facet_grid(sample ~ substitution) +
-  ylab("Relative contribution") +
-  scale_y_continuous(limits = c(0, 0.055), 
-                     expand = c(0, 0), breaks = NULL) + 
-  guides(fill = "none") +
-  theme_bw() +
-  theme(
-    axis.text.y = element_blank(),  
-    axis.title.x = element_text(size = 12),
-    axis.text.x = element_text(size = 5, angle = 90, vjust = 0.5),
-    panel.grid.major.x = element_blank(),
-    panel.spacing.x = unit(0.5, "lines"),
-    strip.text.y = element_blank()
-  )
+mutations_plot <- ggplot(data = tb, aes(
+                          x = context,
+                          y = freq,
+                          fill = substitution,
+                          width = 0.6
+                        )) +
+                          geom_bar(stat = "identity", colour = "black", size = .2) +
+                          scale_fill_manual(values = colors) +
+                          facet_grid(sample ~ substitution) +
+                          ylab("Relative contribution") +
+                          scale_y_continuous(limits = c(0, 0.055), 
+                                             expand = c(0, 0), breaks = NULL) + 
+                          guides(fill = "none") +
+                          theme_bw() +
+                          theme(
+                            axis.text.y = element_blank(),  
+                            axis.title.x = element_text(size = 12),
+                            axis.text.x = element_text(size = 5, angle = 90, vjust = 0.5),
+                            panel.grid.major.x = element_blank(),
+                            # panel.spacing.x = unit(0.5, "lines"),
+                            strip.text.y = element_blank()
+                          )
+ggsave("Images/MutationalPatterns_2.png", plot = mutations_plot, width = 16, height = 9)

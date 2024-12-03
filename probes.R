@@ -54,7 +54,7 @@ ggplot(agg_df, aes(x = relPos, fill = DonorHost)) +
   geom_density(aes( y = after_stat(density)))+
   ggpubr::theme_pubr()+
   facet_wrap(~PPID, scales = "fixed")
-# ggsave("probes.png")
+ggsave("Images/probes.png", width = 16, height = 9)
 
 
 # ggplot(agg_df, aes(x = relPos, fill = PPID)) +
