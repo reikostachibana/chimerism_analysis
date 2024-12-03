@@ -3,17 +3,16 @@ library(BSgenome)
 library(vcfR)
 library(GenomicRanges)
 
-setwd("/Users/reikotachibana/Documents/Chung Lab/Chimerism") 
+# setwd("/Users/reikotachibana/Documents/Chung Lab/Chimerism") 
 
 ref_genome <- "BSgenome.Hsapiens.UCSC.hg38"
 library(ref_genome, character.only = TRUE)
 # library("BSgenome.Hsapiens.UCSC.hg19", character.only = TRUE)
 
-ppid_folders <- list.files(pattern = "PPID")
+bed_files <- list.files("DonorHostSNPs", full.names = TRUE)
 
 agg_bed <- data.frame()
-for (ppid in ppid_folders){
-  bed_file_path <- paste0(ppid, "/", ppid, "_Allvars.bed") # edit
+for (bed_file_path in bed_files){
   if (file.exists(bed_file_path)) {
     bed <- read.table(bed_file_path)
     bed$REF <- substr(bed$V4, (nchar(bed$V4) - 2), (nchar(bed$V4) - 2))

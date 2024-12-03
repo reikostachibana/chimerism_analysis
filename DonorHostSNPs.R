@@ -1,4 +1,4 @@
-ppid <- "PPIDFarrel"
+ppid <- "PPID1706"
 
 library(data.table)
 library(vcfR)
@@ -28,7 +28,7 @@ if (grepl("Farrel", ppid)){
                         pre_fileName,
                         ".vcf.gz")
   
-  post_fileName <- "Farrell_S30_Bulk_S2"
+  post_fileName <- "Farrell_30_Bulk_S2"
   postSNP_file <- paste0(ppid, 
                          "/",
                          post_fileName,

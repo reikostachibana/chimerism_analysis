@@ -53,19 +53,19 @@ ggplot(agg_df, aes(x = relPos, fill = DonorHost)) +
   ggsci::scale_fill_jama(alpha = .5)+
   geom_density(aes( y = after_stat(density)))+
   ggpubr::theme_pubr()+
-  facet_wrap(~PPID)
+  facet_wrap(~PPID, scales = "fixed")
 # ggsave("probes.png")
 
 
-ggplot(agg_df, aes(x = relPos, fill = PPID)) +
-  ggsci::scale_fill_jama(alpha = .5)+
-  geom_density(aes( y = after_stat(density)))+
-  ggpubr::theme_pubr()+
-  facet_wrap(~DonorHost)
-
-
-ggplot(agg_df, aes(x = relPos, fill = DonorHost)) +
-  ggsci::scale_fill_jama(alpha = .5)+
-  geom_density(aes( y = after_stat(density)))+
-  ggpubr::theme_pubr()+
-  facet_wrap(~DonorHost)
+# ggplot(agg_df, aes(x = relPos, fill = PPID)) +
+#   ggsci::scale_fill_jama(alpha = .5)+
+#   geom_density(aes( y = after_stat(density)))+
+#   ggpubr::theme_pubr()+
+#   facet_wrap(~DonorHost)
+# 
+# 
+# ggplot(agg_df, aes(x = relPos, fill = DonorHost)) +
+#   ggsci::scale_fill_jama(alpha = .5)+
+#   geom_density(aes( y = after_stat(density)))+
+#   ggpubr::theme_pubr()+
+#   facet_wrap(~DonorHost)
