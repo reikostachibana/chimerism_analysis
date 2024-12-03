@@ -1,4 +1,4 @@
-ppid <- "PPID1998"
+ppid <- "PPID1706"
 
 library(ggplot2)
 library(readxl)
@@ -6,7 +6,7 @@ library(gridExtra)
 library(gtools)
 
 # setwd("/Users/reikotachibana/Documents/Chung Lab/Chimerism/PPID1998")
-setwd("chimerism_analysis")
+# setwd("chimerism_analysis")
 source("chimerism_functions.R")
 
 # Identify HOM shared by both host and donor 
@@ -108,5 +108,5 @@ for (hmtb in hmtb_list){
   plots_list[[hmtb]] <- plot
 }
 
-ggsave(paste0("contamination_", ppid, ".png"), plot = do.call(grid.arrange, c(plots_list, ncol = 2)),
+ggsave(paste0("Images/contamination_", ppid, ".png"), plot = do.call(grid.arrange, c(plots_list, ncol = 2)),
        width = 16, height = 9)
