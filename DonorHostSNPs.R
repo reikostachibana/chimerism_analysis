@@ -1,4 +1,4 @@
-  ppid <- "PPID1160"
+ppid <- "PPIDFarrel"
 
 library(data.table)
 library(vcfR)
@@ -16,41 +16,70 @@ source('chimerism_functions.R')
 
 metadata <- read_excel("ChimerismFileMetaData.xlsx")
 
-pre_fileName <- metadata %>%
-  filter(PPID == ppid, (Population == "BULK" | Population == "90- PROG"), `Tx Status` == "Pre") %>%
-  pull(`File Name`)
-preSNP_file <- paste0(
-                      ppid, 
-                      "/",
-                      pre_fileName,
-                      ".snps_filtered.vcf.gz")
-preVCF_file <- paste0(ppid, 
-                      "/",
-                      pre_fileName,
-                      ".vcf.gz")
-
-if (grepl("SC", ppid)){
- post_fileName <- metadata %>%
-   filter(PPID == ppid, Population == "BULK", `Tx Status` == "Post") %>%
-   pull(`File Name`)
+if (grepl("Farrel", ppid)){
+  pre_fileName <- "45_S22"
+  preSNP_file <- paste0(
+    ppid, 
+    "/",
+    pre_fileName,
+    ".snps_filtered.vcf.gz")
+  preVCF_file <- paste0(ppid, 
+                        "/",
+                        pre_fileName,
+                        ".vcf.gz")
+  
+  post_fileName <- "Farrell_S30_Bulk_S2"
+  postSNP_file <- paste0(ppid, 
+                         "/",
+                         post_fileName,
+                         ".snps_filtered.vcf.gz")
+  postVCF_file <- paste0(ppid, 
+                         "/",
+                         post_fileName,
+                         ".vcf.gz")
 } else{
   metadata <- metadata %>%
     mutate(HMTB_Num = as.numeric(gsub("HMTB", "", HMTB)))
   
-  post_fileName <- metadata %>%
-    filter(PPID == ppid, Population == "BULK", `Tx Status` == "Post") %>%
+  pre_fileName <- metadata %>%
+    filter(PPID == ppid, (Population == "BULK" | Population == "90- PROG"), `Tx Status` == "Pre") %>%
     slice_min(HMTB_Num) %>%
     pull(`File Name`)
+  preSNP_file <- paste0(
+    ppid, 
+    "/",
+    pre_fileName,
+    ".snps_filtered.vcf.gz")
+  preVCF_file <- paste0(ppid, 
+                        "/",
+                        pre_fileName,
+                        ".vcf.gz")
+  
+  
+  if (grepl("SC", ppid)){
+    post_fileName <- metadata %>%
+      filter(PPID == ppid, Population == "BULK", `Tx Status` == "Post") %>%
+      pull(`File Name`)
+  } else{
+    metadata <- metadata %>%
+      mutate(HMTB_Num = as.numeric(gsub("HMTB", "", HMTB)))
+    
+    post_fileName <- metadata %>%
+      filter(PPID == ppid, Population == "BULK", `Tx Status` == "Post") %>%
+      slice_min(HMTB_Num) %>%
+      pull(`File Name`)
+  }
+  
+  postSNP_file <- paste0(ppid, 
+                         "/",
+                         post_fileName,
+                         ".snps_filtered.vcf.gz")
+  postVCF_file <- paste0(ppid, 
+                         "/",
+                         post_fileName,
+                         ".vcf.gz")
 }
 
-postSNP_file <- paste0(ppid, 
-                       "/",
-                       post_fileName,
-                       ".snps_filtered.vcf.gz")
-postVCF_file <- paste0(ppid, 
-                       "/",
-                       post_fileName,
-                       ".vcf.gz")
 
 pre_fileName
 post_fileName
