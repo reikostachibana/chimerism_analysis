@@ -7,8 +7,11 @@ library(gridExtra)
 # setwd("chimerism_analysis")
 
 # Get genes and their chromosomes/positions
-ensembl <- useMart("ensembl")
+# ensembl <- useMart("ensembl")
+ensembl <- useMart("ensembl", host = "https://useast.ensembl.org")
 ensembl <- useDataset("hsapiens_gene_ensembl", mart = ensembl)
+
+ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
 
 # listAttributes(ensembl)
 genes <- getBM(attributes = c("ensembl_gene_id", 
