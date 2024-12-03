@@ -10,7 +10,7 @@ setwd("chimerism_analysis")
 ensembl <- useMart("ensembl")
 ensembl <- useDataset("hsapiens_gene_ensembl", mart = ensembl)
 
-listAttributes(ensembl)
+# listAttributes(ensembl)
 genes <- getBM(attributes = c("ensembl_gene_id", 
                               "external_gene_name",
                               "chromosome_name",
@@ -19,10 +19,11 @@ genes <- getBM(attributes = c("ensembl_gene_id",
                mart = ensembl)
 
 # Find which gene each SNP is
-ppid_folders <- list.files(pattern = "PPID")
+bed_files <- list.files("DonorHostSNPs", full.names = TRUE)
+# ppid_folders <- list.files(pattern = "PPID")
 agg_df <- data.frame()
-for (ppid in ppid_folders){
-  bed_file_path <- paste0(ppid, "/", ppid, "_Allvars.bed") # edit
+for (bed_file_path in bed_files){
+  # bed_file_path <- paste0(ppid, "/", ppid, "_Allvars.bed") # edit
   if (file.exists(bed_file_path)) {
     bed <- read.table(bed_file_path)
     bed$V1 <- sub("^chr", "", bed$V1)
@@ -38,7 +39,11 @@ for (ppid in ppid_folders){
     gene_names <- overlapping_genes$external_gene_name
     bed$gene <- NA
     bed$gene[queryHits(overlaps)] <- gene_names
+    
+    file_name <- basename(bed_file_path)
+    ppid <- sub("_DonorHostSNPs.bed", "", file_name)
     bed$PPID <- ppid
+    
     agg_df <- rbind(agg_df, bed)
     # print(ppid)
     # print(table(bed$gene))

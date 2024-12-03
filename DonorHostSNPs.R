@@ -1,4 +1,4 @@
-ppid <- "SC36"
+  ppid <- "PPID1160"
 
 library(data.table)
 library(vcfR)
@@ -10,7 +10,7 @@ library(readxl)
 #######################
 ## Donor Chimerism ###
 #######################
-setwd("/Users/reikotachibana/Documents/Chung Lab/chimerism_analysis") 
+# setwd("/Users/reikotachibana/Documents/Chung Lab/chimerism_analysis") 
 # setwd("C:/Users/Reiko/Documents/chimerism_analysis")
 source('chimerism_functions.R')
 
