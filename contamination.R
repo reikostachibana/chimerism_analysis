@@ -1,4 +1,4 @@
-ppid <- "PPID1706"
+ppid <- "SC71"
 
 library(ggplot2)
 library(readxl)
@@ -69,14 +69,19 @@ metadata <- metadata[metadata$PPID == ppid, ]
 metadata <- as.data.frame(metadata)
 unique_hmtb <- unique(metadata$HMTB)
 hmtb_list <- as.list(unique_hmtb)
-hmtb_list <- mixedsort(unlist(hmtb_list))
+hmtb_list <- c(
+  mixedsort(unlist(hmtb_list[grepl("pre", hmtb_list)])),  # "pre" items sorted first
+  mixedsort(unlist(hmtb_list[!grepl("pre", hmtb_list)]))  # Remaining items
+)
 
 population_colors <- c(
   "ELSE" = "purple", 
   "BULK" = "lightgreen", 
   "HSC" = "darkgreen", 
   "LMPP" = "lightblue", 
-  "PROG" = "darkblue"
+  "PROG" = "darkblue",
+  "34mid LMPP" = "pink",
+  "34mid HSC" = "orange"
 )
 
 plots_list <- list()
@@ -88,7 +93,19 @@ for (hmtb in hmtb_list){
     row <- metadata_filt[i, ]
     population <- row$Population
     file_path <- paste0(ppid, "/", row$"File Name", ".snps_filtered.vcf.gz")
-    vcf <- process_VCF(file_path)
+    
+    vcf <- tryCatch({
+      process_VCF(file_path)
+    }, error = function(e) {
+      message("Error in processing file: ", file_path)
+      message("Error message: ", e$message)
+      return(NULL)
+    })
+    
+    if (is.null(vcf)) {
+      next
+    }
+    
     SNPs <- semi_join(vcf, sharedSNP_postBulk,
                       by = c("CHROM", "POS", "ALT"))
     SNPs <- find_vaf(SNPs)
